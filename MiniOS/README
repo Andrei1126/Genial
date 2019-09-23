@@ -1,0 +1,147 @@
+
+Micut Andrei-Ion-Grupa 311CB
+
+Structuri de Date - Tema 2
+
+1. Scopul temei
+    
+    Scopul temei este acela de a implementa un program ce simuleaza algoritmul
+de creeare de noi procese intr-un sistem de operare simplist (incluzand alocare
+de memorie pentru un anumit proces, adaugarea si scoaterea datelor de pe stiva
+unui proces, simularea unui scheaduler, etc). In cadrul implementarii au fost
+folosite structurile de date stiva si coada.
+
+2. Implementare
+   
+    Implementarea temei este facuta in mai multe perechi de fisiere .h si .c
+i) in list.h/.c se afla implementarea unei list simplu inlantuite generice
+ii) in queue.h/.c se afla implementarea unei cozi folosind lista simplu inlan-
+tuita. 
+iii) in stack.h/.c se afla implementarea unei stive generice, bazata pe
+aceleasi principii ca implementarea cozii.
+iv) In main se afla programul propriu-zis. Cateva detalii relevante despre
+implementarea facuta in main ar fi:
+ - existenta unui vector de pid-uri (numarul acestora este stiut si valoarea
+acestora nu este foarte mare). Acest vector are rolul de a face cautarea
+unui proces mult mai rapida, folosindu-ne de adresare indexata. Tot se va
+"itera" prin cozi (nu iterare propriu-zisa, ci folosind push-uri si pop-uri)
+atunci cand se doreste afisarea pid-urilor de coada de procese terminate, de
+exemplu, insa acest vector este extrem de util in cazul get-urilor (vom stii
+imediat daca valoarea unui pid mai este folosita sau nu)
+ - exista o coada ce pastreaza pointeri catre procese in ordinea in care
+acestea sunt in memorie. Aceasta coada este folosita pentru a cauta un spatiu
+gol in memorie ce poate fi folosit la construirea unui nou proces.
+
+3. Implementarea detaliata
+    
+    Am debutat realizarea acestei teme prin fisierul list.h, unde am declarat functii-
+le de afisare, comparare, crearea unei noi celule in care este retinuta informatia,
+stergerea unei celule si intoarcerea continutului. Pe langa aceste functii, se
+regaseste si definirea structurii list_cell_t, ce contine un pointer de tip void,
+ce reprezinta informatia si o legatura catre celula urmatoare.
+
+    In fisierul list.c, se gaseste functie make_list_cell ce intoarce un pointer la 
+informatia din celula. Cu ajutorul acestei functii, realizez alocarea unei celule. 
+Se mai gaseste si functia erase_list_cell ce intoarce tot un pointer la informatia 
+stearsa din celula.
+
+    Am continuat realizarea temei prin fisierul queue.h, in care am definit structura 
+queue_t ce ma va ajuta sa ma deplasez, atat pe informatia de dinainte, cat si pe urma-
+toarea si voi stii si dimensiunea cozii, cu size. Apoi am declarat functiile de intia-
+lizare a cozii, de verficare daca coada este plina sau nu, de adaugarea a unui nou 
+element la sfarsitul cozii, de eliminare a primului element, de intoarcere a infor-
+matiei ce se afla in primul element al cozii, de inserare, conditionata de functia de 
+comparare, de sortare a cozii dupa un anumit criteriu, de afisare a cozii folosind o 
+functie specifica si de eliberare a memoriei.
+
+    In fisierul queue.c, am realizat functiile ce ma vor ajuta in lucrul cu, cozi.
+Mai intai, avem functia queue_intialize ce imi va intializa coada . Apoi functia
+queue_is_empty ce imi va intoarce 1 daca coada este goala, iar 0 in caz contrar.
+Functia queue_push realizeaza adaugarea unui nou element la sfarstiul cozii,
+insa doar daca celula a fost corect construita. Functia queue_pop realizeaza
+eliminarea primului element si micsorarea spatiului din coada. Functia queue_front
+intoarce informatia primului element al cozii. Functia queue_insert ma ajuta sa 
+inserez un element in coada, astfel: creez 2 cozi auxiliare, iar elementele cele
+mai mici le voi pune in prima coada si in a doua le voi pune pe cele mai mari.
+INnserez inapoi elementele cele mai mici, apoi elementul specificat, iar apoi inserez 
+inapoi elementele cele mai mari. Functia queue_sort imi sorteaza coada crescator, iar
+apoi imi returneaza coada. Functia queue_print ma ajuta sa afisez coada punand elem
+tele intr-un auxiliar, afisandu-le si punandu-le inapoi in coada. Functia queue_free 
+imi realizeaza eliberarea memoriei cozii.
+
+    Apoi urmeaza fisierul stack.h ce imi va fi util pentru lucrul cu stive. Am definit
+o structura ce contine un pointer catre varful stivei. Am realizat mai apoi si functia
+de intializare a stivei, de verificare daca este goala, de eliminare a unul element ce 
+se afla in varful stivei, de intoarcere a informatiei stocata in varful stivei,de afisare 
+a elementelor din stiva folosind o functie specifica si de eliberare a elementelor de pe
+stiva.
+
+    In fisierul stack.h am functia stack_initialize ce ma va ajuta la intializarea stivei.
+Functia stack_is_empty verifica daca stiva este goala sau nu. Functia stack_push imi reali-
+zeaza adaugarea unui element in varful stivei. Functia stack_pop face eliminarea elementului
+din varful stivei . Functia stack_top imi intoarce informatia stocata in varful stivei.
+Functia stack_print ma ajuta sa afisez coada folosind o stiva temporara, punand elementele
+intr-o stiva auxiliara in ordine inversa, ia apoi inversandu-le la loc si afisandu-le.
+Functia stack_free imi realizeaza eliberarea memoriei din stiva.
+
+   In fisierul main.c mai intai am definit structura de procese process_t ce contine pid-ul
+procesului, prioritatea, timpul total si de executie, memoria de la inceput, dimensiunea 
+memoriei, statusul, numarul de bites ai stivei si o stiva. Functia print_waiting_process
+imi afiseaza coada de asteptare la momentul curent. Functia print_finished_process imi 
+afiseaza coada proceselor terminate. Functia print_stack_content afiseaza doar continutul
+stivei. Functia compare_waiting_process, compara procesele in asteptare, astfel: sorteaza
+mai intai dupa prioritati, apoi dupa timpul ramas, iar la final dupa pid-ul procesului.
+Functia compare_process pid, compara pid-urile a 2 procese. Functia add_process, adauga un 
+proces in memorie, astfel: mai intai se aloca spatiu pentru acesta, apoi cauta primul pid 
+liber, realizez intializarea procesului ce este creat (ajutandu-ma si de functia 
+stack_intialize), incerc sa gasesc spatiu liber, creez un proces cu urmatoarele atribute 
+si il inserez in coada de asteptare, descendent dupa prioritati, ascendent dupa timpul de
+executie (daca prioritatile sunt egale), ascendent dupa PID (daca prioritatile si timpul 
+de executie sunt egale). Functia count_pid, numara de cate ori un anumit PID apare intr-o 
+coada, iterez coada, elimin elementul in tmp, apoi pun toate elementele inapoi in coada 
+originala. Functia free_simple, realizeaza eliberarea memoriei alocate. Functia free_process,
+realizeaza eliberarea memoriei alocate pentru un proces astfel: mai intai eliberez stiva, 
+iar apoi procesul. 
+    In main, verific daca nr parametrilor a fost introdus corect, deschid fisierele, initializez
+structurile necesare, Apoi realizez citirea din fisier si verific, din nou, daca numarul 
+parametrilor este introdus corect. Presupun ca input-ul este mai mult sau mai putin valid, adaug
+procesul in coada de asteptare, citesc din fisier dimensiunea memoriei, timpul total, prioritatile 
+si le retin in variabila e. Adaug procesul(vine impreuna cu, coada de asteptare, pid-ul procesului,
+dimensiunea memoriei, timpul total, prioritatea). Daca procesul nu exista sau e nu are atributele 
+specificate, atunci se iese din program cu mesaj de eroare. Daca nu se poate rezerva memorie pentru
+PID, atunci mi se  va afisa mesajul de eroare "Cannot reserve memory for PID", iar apoi eliberez
+procesul. In cazul in care se poate aloca memorie pentru PID, se va afisa mesajul "Process created 
+successfully" si voi vedea si adresa de memorie unde a fost creat. Daca nu exista procesul, atunci 
+va ocupa un loc in memorie, iar apoi va deveni un proces functional. Daca exista, va fi inserat in 
+coada. Determin statusul unui proces, insa mai intai verific daca numarul parametrilor introdusi
+este corect, verific daca PID-ul procesului nu exista si afisez mesajul "Process not found", 
+altfel daca procesul exista si ruleaza, afisez atributele procesului alaturi de mesajul "Process 
+is running", altfel daca procesul exista si este in asteptare, se va afisa mesajul "Process is 
+waiting" si timpul ramas. In continuare, afisez procesele terminate cu pid-ul specific fiecaruia 
+in parte. Salvez datele pe stiva, insa mai intai verific daca numarul parametrilor este corect 
+introdus, verific daca exista procesul (cu ajutorul PID-ului) sau daca s-a terminat si afisez mesajul
+"PID not found", altfel daca stiva + 4 octeti este plina, afiseaza mesajul "Stack overflow", 
+altfel aloc memorie pentru p_value si verific alocarea. Sterg informatia de pe stiva, insa mai 
+intai verific ca mai sus, apoi verific daca stiva este goala, altfel elimin primii octeti de la 
+inceputul stivei si eliberez zona alocata. Afisez coada in asteptare, afisez doar continutul plin
+al stivei, iar in rest procedez ca la pop. Altfel, afisez coada planificatorului la momentul curent.
+ALtfel, afiseaza coada de procese terminate. Executa o anumita perioada de timp pe procesor un proces.
+Mai intai verific daca numarul parametrilor introdusi este corect, apoi organizez coada in functie 
+de timp . Actualizez timpul de rulare al unui proces in functie de cuanta de timp ramasa. Apoi 
+verific daca exista procesul. Calculez timpul ramas pentru un proces. Verific daca procesul s-a 
+terminat. Altfel, din cuanta de timp se va scadea timpul de rulare. Daca noua valoare a cunatei 
+de timp va fi 0, atunci statusul procesului de rulare va fi egal cu procesul de asteptare. Daca coada
+este plina, elimin coada de asteptare, iar statusul procesului de rulare va fi acelasi cu procesul de 
+rulare, iar apoi inserez. Altfel, daca coada este goala, statusul procesului de rulare este egal cu 
+procesul de rulare. Se continua executia pana cand toate procesele ajung în coada de procese terminate.
+Calculez timpul ramas pana la terminarea unui proces.
+    Ignor comenzile necunoscute. Eliberez coada.
+
+
+4. Alte observatii
+    Toate implementarile sunt generice.
+    Nu se itereaza prin cozi sau stive.
+    Nu exista leakuri de memorie.
+
+Local obtin 105/85 puncte, iar pe vmchecker nu imi este luat in considerare VALGRIND de la testul 9 si nu-mi este afisat punctajul.
+
